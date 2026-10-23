@@ -7,26 +7,34 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0BEB9026F076BBA8ACFD0112 /* SigningDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFEBAA6A2F02B68F4D95D473 /* SigningDashboardView.swift */; };
-		4AC0B516E930323B7134A057 /* AnisetteServersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 482D32535CF7A587070A3316 /* AnisetteServersView.swift */; };
-		8A2C21D692A6ACAD4339C4B5 /* MainStoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7859742E2F22585E93A673A9 /* MainStoreView.swift */; };
-		AF250367A3C77DFC118A1676 /* AppItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C279AC30E9C0C0F3777542CF /* AppItem.swift */; };
-		BBFE882F72BFC0B67442AD33 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF44FC59264DEAB34CC32E3 /* DownloadManager.swift */; };
+		3A0FFC8C93B869EE2DEFDFA5 /* SigningDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0CDA45B10CBDE380B493546 /* SigningDashboardView.swift */; };
+		47B6C2728582688F53BCEA5C /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9EF8163124A272F650F865 /* DownloadManager.swift */; };
+		4F5524AAF94F893FEEAFFA0E /* MainStoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93659EE67CA29B13396F4F63 /* MainStoreView.swift */; };
+		9B241F85C1EF77FBC77F3676 /* AnisetteServersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1874563C594226D9C058E82D /* AnisetteServersView.swift */; };
 		CC5AC85286DFE82D896AD203 /* AppStoreApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5CAA252372535C9C24CC64 /* AppStoreApp.swift */; };
+		F2379B958A7123007EFCE55A /* AppItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31AC1EA0DD8C1D9A86B24CC /* AppItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2EF44FC59264DEAB34CC32E3 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
-		482D32535CF7A587070A3316 /* AnisetteServersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnisetteServersView.swift; sourceTree = "<group>"; };
+		1874563C594226D9C058E82D /* AnisetteServersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnisetteServersView.swift; sourceTree = "<group>"; };
+		3F9EF8163124A272F650F865 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 		5B5CAA252372535C9C24CC64 /* AppStoreApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreApp.swift; sourceTree = "<group>"; };
 		62134C1AA963734A04F43D92 /* AppStoreProject.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AppStoreProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		7859742E2F22585E93A673A9 /* MainStoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainStoreView.swift; sourceTree = "<group>"; };
-		A976C0E3226EF0EB05B966EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		C279AC30E9C0C0F3777542CF /* AppItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppItem.swift; sourceTree = "<group>"; };
-		FFEBAA6A2F02B68F4D95D473 /* SigningDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigningDashboardView.swift; sourceTree = "<group>"; };
+		93659EE67CA29B13396F4F63 /* MainStoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainStoreView.swift; sourceTree = "<group>"; };
+		C31AC1EA0DD8C1D9A86B24CC /* AppItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppItem.swift; sourceTree = "<group>"; };
+		E0CDA45B10CBDE380B493546 /* SigningDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigningDashboardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		1CAD3D728FBC7E4452E00BCE /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C31AC1EA0DD8C1D9A86B24CC /* AppItem.swift */,
+			);
+			name = Models;
+			path = AppStoreProject/Models;
+			sourceTree = "<group>";
+		};
 		46B6C727D66FD74859D5F16A /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -35,26 +43,22 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		959316A516A67AA7DE75B795 /* Services */ = {
+		4964AD491AB06258736D8DCA /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				2EF44FC59264DEAB34CC32E3 /* DownloadManager.swift */,
+				3F9EF8163124A272F650F865 /* DownloadManager.swift */,
 			);
-			path = Services;
-			sourceTree = "<group>";
-		};
-		975F0DF868DF47AFF10090E7 /* SupportingFiles */ = {
-			isa = PBXGroup;
-			children = (
-				A976C0E3226EF0EB05B966EC /* Info.plist */,
-			);
-			path = SupportingFiles;
+			name = Services;
+			path = AppStoreProject/Services;
 			sourceTree = "<group>";
 		};
 		9F021232B8C679719BB7CB3B = {
 			isa = PBXGroup;
 			children = (
 				A3B1FF23A414B9F93354A0B5 /* AppStoreProject */,
+				1CAD3D728FBC7E4452E00BCE /* Models */,
+				4964AD491AB06258736D8DCA /* Services */,
+				BEE0D529847DD1376BBE10A2 /* Views */,
 				46B6C727D66FD74859D5F16A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -63,30 +67,19 @@
 			isa = PBXGroup;
 			children = (
 				5B5CAA252372535C9C24CC64 /* AppStoreApp.swift */,
-				B25CBED2621D1A85FC13D1DC /* Models */,
-				959316A516A67AA7DE75B795 /* Services */,
-				975F0DF868DF47AFF10090E7 /* SupportingFiles */,
-				B266201BAEE33FBC30AEA25C /* Views */,
 			);
 			path = AppStoreProject;
 			sourceTree = "<group>";
 		};
-		B25CBED2621D1A85FC13D1DC /* Models */ = {
+		BEE0D529847DD1376BBE10A2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				C279AC30E9C0C0F3777542CF /* AppItem.swift */,
+				1874563C594226D9C058E82D /* AnisetteServersView.swift */,
+				93659EE67CA29B13396F4F63 /* MainStoreView.swift */,
+				E0CDA45B10CBDE380B493546 /* SigningDashboardView.swift */,
 			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		B266201BAEE33FBC30AEA25C /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				482D32535CF7A587070A3316 /* AnisetteServersView.swift */,
-				7859742E2F22585E93A673A9 /* MainStoreView.swift */,
-				FFEBAA6A2F02B68F4D95D473 /* SigningDashboardView.swift */,
-			);
-			path = Views;
+			name = Views;
+			path = AppStoreProject/Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -144,12 +137,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4AC0B516E930323B7134A057 /* AnisetteServersView.swift in Sources */,
-				AF250367A3C77DFC118A1676 /* AppItem.swift in Sources */,
+				9B241F85C1EF77FBC77F3676 /* AnisetteServersView.swift in Sources */,
+				F2379B958A7123007EFCE55A /* AppItem.swift in Sources */,
 				CC5AC85286DFE82D896AD203 /* AppStoreApp.swift in Sources */,
-				BBFE882F72BFC0B67442AD33 /* DownloadManager.swift in Sources */,
-				8A2C21D692A6ACAD4339C4B5 /* MainStoreView.swift in Sources */,
-				0BEB9026F076BBA8ACFD0112 /* SigningDashboardView.swift in Sources */,
+				47B6C2728582688F53BCEA5C /* DownloadManager.swift in Sources */,
+				4F5524AAF94F893FEEAFFA0E /* MainStoreView.swift in Sources */,
+				3A0FFC8C93B869EE2DEFDFA5 /* SigningDashboardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,7 +153,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = AppStoreProject/SupportingFiles/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -170,6 +165,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.malek.AppStoreProject;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -178,7 +174,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = AppStoreProject/SupportingFiles/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -188,6 +186,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.malek.AppStoreProject;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -243,6 +242,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -299,6 +299,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";

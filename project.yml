@@ -1,13 +1,27 @@
 name: AppStoreProject
 options:
   bundleIdPrefix: com.malek
+  deploymentTarget:
+    iOS: "15.0"
 targets:
   AppStoreProject:
     type: application
     platform: iOS
     deploymentTarget: "15.0"
-    sources: 
-      - path: AppStoreProject
+    sources:
+      - path: "AppStoreProject/AppStoreApp.swift"
+      - path: "AppStoreProject/Models/AppItem.swift"
+      - path: "AppStoreProject/Services/DownloadManager.swift"
+      - path: "AppStoreProject/Views/AnisetteServersView.swift"
+      - path: "AppStoreProject/Views/MainStoreView.swift"
+      - path: "AppStoreProject/Views/SigningDashboardView.swift"
     settings:
-      INFOPLIST_FILE: AppStoreProject/SupportingFiles/Info.plist
-      GENERATE_INFOPLIST_FILE: NO
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.malek.AppStoreProject
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        CODE_SIGNING_ALLOWED: NO
+        CODE_SIGNING_REQUIRED: NO
+        CODE_SIGN_IDENTITY: ""
+        INFOPLIST_FILE: "AppStoreProject/SupportingFiles/Info.plist"
+        GENERATE_INFOPLIST_FILE: NO
