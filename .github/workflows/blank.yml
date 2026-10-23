@@ -15,6 +15,8 @@ jobs:
     steps:
     - name: Checkout Repository Source
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Fetches the full history so git branches can resolve properly
 
     - name: Setup Python Environment
       uses: actions/setup-python@v5
@@ -31,16 +33,17 @@ jobs:
     - name: Generate Precise Xcode Workspace Project
       run: xcodegen generate
 
+    # Force pushes the generated file directory structure back into your repository
     - name: Commit Generated Project Structure back to GitHub
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add AppStoreProject/ project.yml AppStoreProject.xcodeproj/
         if git diff --staged --quiet; then
-          echo "No changes found."
+          echo "No new adjustments discovered."
         else
-          git commit -m "Provisioned compilable app structures"
-          git push origin main
+          git commit -m "Provisioned clean compilable xcode file system definitions"
+          git push origin main --force
         fi
 
     - name: Compile Project with Xcode
