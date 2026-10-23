@@ -9,6 +9,9 @@ jobs:
   generate_and_compile:
     runs-on: macos-latest
 
+    permissions:
+      contents: write # Grants the server permissions to commit files back to your repository
+
     steps:
     - name: Checkout Repository Source
       uses: actions/checkout@v4
@@ -18,15 +21,26 @@ jobs:
       with:
         python-version: '3.10'
 
+    # Step 1: Run your script to create the code and the .xcodeproj directory
     - name: Run Project Generation Script
       run: |
-        if [ -f "generate_app_store_project.py" ]; then
-          python generate_app_store_project.py
+        python generate_app_store_project.py
+
+    # Step 2: Automatically commit the .xcodeproj file back to GitHub
+    - name: Commit Generated Xcode Project to GitHub
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@://github.com"
+        git add AppStoreProject/ AppStoreProject.xcodeproj/
+        # Check if there are any updates before running the commit command
+        if git diff --staged --quiet; then
+          echo "No new files generated to commit."
         else
-          echo "Error: generate_app_store_project.py file not found!"
-          exit 1
+          git commit -m "Auto-generated xcode project structure from build runner"
+          git push origin main
         fi
 
+    # Step 3: Run the compiler package assembly line
     - name: Compile Generated Project with Xcode
       run: |
         xcodebuild -project AppStoreProject.xcodeproj \
@@ -40,6 +54,7 @@ jobs:
                    -archivePath $RUNNER_TEMP/AppStore.xcarchive \
                    clean archive
 
+    # Step 4: Bundle package elements into a portable IPA file
     - name: Package App Bundle into Portable IPA
       run: |
         mkdir -p $RUNNER_TEMP/Payload
@@ -47,6 +62,7 @@ jobs:
         cd $RUNNER_TEMP
         zip -r CustomAppStore_Unsigned.ipa Payload
 
+    # Step 5: Output ready archive artifact 
     - name: Upload Unsigned IPA Artifact
       uses: actions/upload-artifact@v4
       with:
