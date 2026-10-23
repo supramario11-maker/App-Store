@@ -96,15 +96,30 @@ jobs:
     # ---- 4. Compile Application Package Structures ----
     - name: Build Application Binary Structures
       run: |
-        # Creates mock target directories to mimic compile architectures if raw compiling is skipped
         mkdir -p build/Payload
-        # If your workspace contains raw folders instead of project structures, package them into the zip tree
-        # Example compile rule command:
-        # xcodebuild -project AppStoreProject.xcodeproj -scheme AppStoreProject -sdk iphoneos -configuration Release OBJROOT=build SYMROOT=build
-        # cp -r build/Release-iphoneos/AppStoreProject.app build/Payload/
         
-        # Fallback directory preservation so compression doesn't exit out with blank target errors
-        touch build/Payload/.placeholder
+        # 1. Clear any old build data structures
+        rm -rf build/Release-iphoneos
+        
+        # 2. Command Xcode to natively compile your AppStoreProject from the generated project.xcodeproj
+        # This compiles the source trees into an ARM64 iOS application binary wrapper
+        xcodebuild -project AppStoreProject.xcodeproj \
+                   -scheme AppStoreProject \
+                   -sdk iphoneos \
+                   -configuration Release \
+                   -derivedDataPath build/DerivedData \
+                   OBJROOT=build SYMROOT=build \
+                   CODE_SIGNING_ALLOWED=NO \
+                   CODE_SIGNING_REQUIRED=NO
+        
+        # 3. Securely clone the compiled application bundle into the official deployment Payload directory
+        if [ -d "build/Release-iphoneos/AppStoreProject.app" ]; then
+          cp -r build/Release-iphoneos/AppStoreProject.app build/Payload/
+          echo "Success: Natively compiled application binary wrapper deployed into Payload layer."
+        else
+          echo "Compilation Error: Xcode failed to generate the production .app bundle directory structure!"
+          exit 1
+        fi
 
     # ---- 5. Cryptographic Packaging & OTA Manifest Delivery Assembly ----
     - name: Resign Package Bundle and Output Wireless Profiles
@@ -112,18 +127,20 @@ jobs:
         P12_PASSWORD: ${{ secrets.APPLE_P12_PASSWORD }}
       run: |
         cd build
+        
+        # Pack the compiled .app bundle and asset frameworks into a raw archive structure
         zip -r unsigned.ipa Payload
         
-        # If credentials are valid, cryptographically lock your app bundle layout
+        # Execute standalone code signing over the binary tree using your enterprise credentials
         if [ -f "certificate.p12" ] && [ ! -z "$P12_PASSWORD" ]; then
-          echo "Executing deep code signing via enterprise keys..."
+          echo "Executing cryptographic signing across binary targets..."
           zsign -k certificate.p12 -p "$P12_PASSWORD" -m profile.mobileprovision -o AppStoreProject.ipa unsigned.ipa
         else
-          echo "Signing identities missing. Saving unsealed raw package archive instead."
+          echo "Signing identities unavailable. Saving unsealed raw package archive instead."
           cp unsigned.ipa AppStoreProject.ipa
         fi
         
-        # Dynamically generate wireless OTA provisioning manifest definitions
+        # Build wireless OTA delivery xml specification properties list
         cat << 'EOF' > manifest.plist
         <?xml version="1.0" encoding="UTF-8"?>
         <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://apple.com">
@@ -157,6 +174,7 @@ jobs:
         </dict>
         </plist>
         EOF
+
 
     # ---- 6. Commit Fixed Codebase back to GitHub Repository ----
     # ---- 6. Commit Fixed Codebase back to GitHub Repository ----
