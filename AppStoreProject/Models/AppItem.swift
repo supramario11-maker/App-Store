@@ -7,4 +7,5 @@ struct AppItem: Identifiable, Codable {
     let version: String
     let ipaURL: URL?
     let iconName: String
+    let manifestName: String // Links directly to the matching manifest file name on GitHub Pages
 }
