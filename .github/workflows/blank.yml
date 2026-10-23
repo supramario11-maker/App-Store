@@ -1,73 +1,269 @@
-name: Generate and Build Unsigned App Store
+
+name: Regenerate Xcode Project and Build Unsigned IPA
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   workflow_dispatch:
 
-jobs:
-  generate_and_compile:
-    runs-on: macos-latest
+permissions:
+  contents: write
 
-    permissions:
-      contents: write
+concurrency:
+  group: regenerate-xcode-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  generate-and-build:
+    runs-on: macos-latest
+    timeout-minutes: 30
 
     steps:
-    - name: Checkout Repository Source
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0 # Fetches the full history so git branches can resolve properly
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Setup Python Environment
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-    - name: Run Project Generation Script
-      run: |
-        python generate_app_store_project.py
+      - name: Generate App Source Files
+        run: |
+          if [ -f generate_app_store_project.py ]; then
+            python generate_app_store_project.py
+          else
+            echo "No generator script found; using existing Swift files."
+          fi
 
-    - name: Install Project Builder Engine
-      run: brew install xcodegen
+      - name: Install XcodeGen
+        run: |
+          brew install xcodegen
+          xcodegen --version
 
-    - name: Generate Precise Xcode Workspace Project
-      run: xcodegen generate
+      - name: Rebuild Project Definition from All Swift Files
+        shell: bash
+        run: |
+          set -euo pipefail
 
-    # Force pushes the generated file directory structure back into your repository
-    - name: Commit Generated Project Structure back to GitHub
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add AppStoreProject/ project.yml AppStoreProject.xcodeproj/
-        if git diff --staged --quiet; then
-          echo "No new adjustments discovered."
-        else
-          git commit -m "Provisioned clean compilable xcode file system definitions"
-          git push origin main --force
-        fi
+          python <<'PY'
+          import json
+          import os
+          from pathlib import Path
 
-    - name: Compile Project with Xcode
-      run: |
-        xcodebuild -project AppStoreProject.xcodeproj \
-                   -scheme AppStoreProject \
-                   -configuration Release \
-                   -sdk iphoneos \
-                   CODE_SIGNING_ALLOWED=NO \
-                   CODE_SIGNING_REQUIRED=NO \
-                   CODE_SIGN_IDENTITY="" \
-                   PROVISIONING_PROFILE_SPECIFIER="" \
-                   -archivePath $RUNNER_TEMP/AppStore.xcarchive \
-                   clean archive
+          root = Path.cwd()
 
-    - name: Package App Bundle into Portable IPA
-      run: |
-        mkdir -p $RUNNER_TEMP/Payload
-        cp -R $RUNNER_TEMP/AppStore.xcarchive/Products/Applications/*.app $RUNNER_TEMP/Payload/
-        cd $RUNNER_TEMP
-        zip -r CustomAppStore_Unsigned.ipa Payload
+          excluded_dirs = {
+              ".git", ".github", ".build", "DerivedData",
+              "Pods", "Carthage", "node_modules", ".venv",
+              "Tests", "UITests", "UnitTests"
+          }
 
-    - name: Upload Unsigned IPA Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: CustomAppStore-Unsigned-Build
-        path: ${{ runner.temp }}/CustomAppStore_Unsigned.ipa
+          def excluded(path):
+              parts = set(path.parts)
+              return bool(parts & excluded_dirs) or any(
+                  part.endswith(".xcodeproj") for part in path.parts
+              )
+
+          swift_files = sorted(
+              path for path in root.rglob("*.swift")
+              if path.is_file() and not excluded(path.relative_to(root))
+          )
+
+          if not swift_files:
+              raise SystemExit(
+                  "ERROR: No Swift files found. "
+                  "Check the repository and generator script."
+              )
+
+          print(f"Found {len(swift_files)} Swift source files:")
+          for path in swift_files:
+              print(f"  {path.relative_to(root)}")
+
+          resource_extensions = {
+              ".storyboard", ".xib", ".strings", ".stringsdict",
+              ".json", ".png", ".jpg", ".jpeg", ".pdf",
+              ".ttf", ".otf", ".mp4", ".wav", ".caf"
+          }
+
+          asset_catalogs = sorted(
+              path for path in root.rglob("*.xcassets")
+              if path.is_dir() and not excluded(path.relative_to(root))
+          )
+
+          resources = list(asset_catalogs)
+
+          for path in root.rglob("*"):
+              if not path.is_file():
+                  continue
+
+              relative = path.relative_to(root)
+
+              if excluded(relative):
+                  continue
+
+              if path.suffix.lower() not in resource_extensions:
+                  continue
+
+              # Asset catalog contents are included by the catalog itself.
+              if any(part.endswith(".xcassets") for part in relative.parts):
+                  continue
+
+              resources.append(path)
+
+          resources = sorted(set(resources))
+
+          # Prefer the existing project Info.plist.
+          plist_candidates = [
+              root / "AppStoreProject/SupportingFiles/Info.plist",
+              root / "AppStoreProject/Info.plist",
+              root / "Info.plist",
+          ]
+
+          info_plist = next(
+              (p for p in plist_candidates if p.is_file()),
+              None
+          )
+
+          def yaml_path(path):
+              return json.dumps(path.relative_to(root).as_posix())
+
+          lines = [
+              "name: AppStoreProject",
+              "options:",
+              "  bundleIdPrefix: com.malek",
+              "  deploymentTarget:",
+              '    iOS: "15.0"',
+              "targets:",
+              "  AppStoreProject:",
+              "    type: application",
+              "    platform: iOS",
+              '    deploymentTarget: "15.0"',
+              "    sources:",
+          ]
+
+          for path in swift_files:
+              lines.append(f"      - path: {yaml_path(path)}")
+
+          if resources:
+              lines.append("    resources:")
+              for path in resources:
+                  lines.append(f"      - path: {yaml_path(path)}")
+
+          lines.extend([
+              "    settings:",
+              "      base:",
+              "        PRODUCT_BUNDLE_IDENTIFIER: com.malek.AppStoreProject",
+              '        SWIFT_VERSION: "5.0"',
+              '        TARGETED_DEVICE_FAMILY: "1,2"',
+              "        CODE_SIGNING_ALLOWED: NO",
+              "        CODE_SIGNING_REQUIRED: NO",
+              '        CODE_SIGN_IDENTITY: ""',
+          ])
+
+          if info_plist:
+              lines.extend([
+                  f"        INFOPLIST_FILE: {yaml_path(info_plist)}",
+                  "        GENERATE_INFOPLIST_FILE: NO",
+              ])
+              print(f"Using Info.plist: {info_plist.relative_to(root)}")
+          else:
+              lines.append("        GENERATE_INFOPLIST_FILE: YES")
+              print("No Info.plist found; Xcode will generate one.")
+
+          if any(
+              path.name == "AppIcon.appiconset"
+              for catalog in asset_catalogs
+              for path in catalog.rglob("AppIcon.appiconset")
+          ):
+              lines.append(
+                  "        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon"
+              )
+
+          (root / "project.yml").write_text(
+              "\n".join(lines) + "\n",
+              encoding="utf-8"
+          )
+
+          print("Created project.yml from the discovered source files.")
+          PY
+
+      - name: Delete Old Xcode Project
+        run: |
+          rm -rf AppStoreProject.xcodeproj
+          echo "Removed the old generated Xcode project."
+
+      - name: Generate Fresh Xcode Project
+        run: |
+          xcodegen generate
+          test -d AppStoreProject.xcodeproj
+          xcodebuild -list -project AppStoreProject.xcodeproj
+
+      - name: Commit Regenerated Project
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+          else
+            git commit -m "Regenerate Xcode project from Swift sources"
+            git push origin HEAD:main
+          fi
+
+      - name: Build Unsigned iOS Archive
+        run: |
+          set -euo pipefail
+
+          xcodebuild \
+            -project AppStoreProject.xcodeproj \
+            -scheme AppStoreProject \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath "$RUNNER_TEMP/DerivedData" \
+            -archivePath "$RUNNER_TEMP/AppStore.xcarchive" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            'CODE_SIGN_IDENTITY=' \
+            clean archive
+
+      - name: Package Unsigned IPA
+        run: |
+          set -euo pipefail
+
+          APP_PATH="$RUNNER_TEMP/AppStore.xcarchive/Products/Applications"
+
+          APP_FILE="$(find "$APP_PATH" \
+            -maxdepth 1 -type d -name '*.app' -print -quit)"
+
+          if [ -z "$APP_FILE" ]; then
+            echo "ERROR: No .app bundle found in the archive."
+            exit 1
+          fi
+
+          mkdir -p "$RUNNER_TEMP/Payload"
+          cp -R "$APP_FILE" "$RUNNER_TEMP/Payload/"
+
+          cd "$RUNNER_TEMP"
+          zip -qry CustomAppStore_Unsigned.ipa Payload
+
+          test -s "$RUNNER_TEMP/CustomAppStore_Unsigned.ipa"
+          echo "Unsigned IPA packaged successfully."
+
+      - name: Upload Unsigned IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CustomAppStore-Unsigned-Build
+          path: ${{ runner.temp }}/CustomAppStore_Unsigned.ipa
+          if-no-files-found: error
+          retention-days: 7
