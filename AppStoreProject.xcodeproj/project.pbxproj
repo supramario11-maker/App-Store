@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4164E3832A4E45D36EBDFFB3 /* AppStoreTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD294CBB8DC3E4E317187220 /* AppStoreTarget.swift */; };
 		8A2C21D692A6ACAD4339C4B5 /* MainStoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7859742E2F22585E93A673A9 /* MainStoreView.swift */; };
 		AF250367A3C77DFC118A1676 /* AppItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C279AC30E9C0C0F3777542CF /* AppItem.swift */; };
 		BBFE882F72BFC0B67442AD33 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF44FC59264DEAB34CC32E3 /* DownloadManager.swift */; };
@@ -21,7 +20,6 @@
 		7859742E2F22585E93A673A9 /* MainStoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainStoreView.swift; sourceTree = "<group>"; };
 		A976C0E3226EF0EB05B966EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C279AC30E9C0C0F3777542CF /* AppItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppItem.swift; sourceTree = "<group>"; };
-		FD294CBB8DC3E4E317187220 /* AppStoreTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreTarget.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -61,7 +59,6 @@
 			isa = PBXGroup;
 			children = (
 				5B5CAA252372535C9C24CC64 /* AppStoreApp.swift */,
-				FD294CBB8DC3E4E317187220 /* AppStoreTarget.swift */,
 				B25CBED2621D1A85FC13D1DC /* Models */,
 				959316A516A67AA7DE75B795 /* Services */,
 				975F0DF868DF47AFF10090E7 /* SupportingFiles */,
@@ -143,7 +140,6 @@
 			files = (
 				AF250367A3C77DFC118A1676 /* AppItem.swift in Sources */,
 				CC5AC85286DFE82D896AD203 /* AppStoreApp.swift in Sources */,
-				4164E3832A4E45D36EBDFFB3 /* AppStoreTarget.swift in Sources */,
 				BBFE882F72BFC0B67442AD33 /* DownloadManager.swift in Sources */,
 				8A2C21D692A6ACAD4339C4B5 /* MainStoreView.swift in Sources */,
 			);
