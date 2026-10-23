@@ -11,12 +11,15 @@
 		8A2C21D692A6ACAD4339C4B5 /* MainStoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7859742E2F22585E93A673A9 /* MainStoreView.swift */; };
 		AF250367A3C77DFC118A1676 /* AppItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C279AC30E9C0C0F3777542CF /* AppItem.swift */; };
 		BBFE882F72BFC0B67442AD33 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF44FC59264DEAB34CC32E3 /* DownloadManager.swift */; };
+		CC5AC85286DFE82D896AD203 /* AppStoreApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5CAA252372535C9C24CC64 /* AppStoreApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2EF44FC59264DEAB34CC32E3 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
+		5B5CAA252372535C9C24CC64 /* AppStoreApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreApp.swift; sourceTree = "<group>"; };
 		62134C1AA963734A04F43D92 /* AppStoreProject.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AppStoreProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7859742E2F22585E93A673A9 /* MainStoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainStoreView.swift; sourceTree = "<group>"; };
+		A976C0E3226EF0EB05B966EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C279AC30E9C0C0F3777542CF /* AppItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppItem.swift; sourceTree = "<group>"; };
 		FD294CBB8DC3E4E317187220 /* AppStoreTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreTarget.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -38,6 +41,14 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		975F0DF868DF47AFF10090E7 /* SupportingFiles */ = {
+			isa = PBXGroup;
+			children = (
+				A976C0E3226EF0EB05B966EC /* Info.plist */,
+			);
+			path = SupportingFiles;
+			sourceTree = "<group>";
+		};
 		9F021232B8C679719BB7CB3B = {
 			isa = PBXGroup;
 			children = (
@@ -49,9 +60,11 @@
 		A3B1FF23A414B9F93354A0B5 /* AppStoreProject */ = {
 			isa = PBXGroup;
 			children = (
+				5B5CAA252372535C9C24CC64 /* AppStoreApp.swift */,
 				FD294CBB8DC3E4E317187220 /* AppStoreTarget.swift */,
 				B25CBED2621D1A85FC13D1DC /* Models */,
 				959316A516A67AA7DE75B795 /* Services */,
+				975F0DF868DF47AFF10090E7 /* SupportingFiles */,
 				B266201BAEE33FBC30AEA25C /* Views */,
 			);
 			path = AppStoreProject;
@@ -129,6 +142,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AF250367A3C77DFC118A1676 /* AppItem.swift in Sources */,
+				CC5AC85286DFE82D896AD203 /* AppStoreApp.swift in Sources */,
 				4164E3832A4E45D36EBDFFB3 /* AppStoreTarget.swift in Sources */,
 				BBFE882F72BFC0B67442AD33 /* DownloadManager.swift in Sources */,
 				8A2C21D692A6ACAD4339C4B5 /* MainStoreView.swift in Sources */,
@@ -143,6 +157,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = AppStoreProject/SupportingFiles/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -159,6 +175,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = AppStoreProject/SupportingFiles/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

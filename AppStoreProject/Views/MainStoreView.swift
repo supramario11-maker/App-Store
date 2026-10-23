@@ -5,7 +5,7 @@ struct MainStoreView: View {
     @State private var availableApps: [AppItem] = [
         AppItem(id: UUID(), title: "Roblox", subtitle: "Play Millions of Games", version: "2.640.0", ipaURL: nil, iconName: "gamecontroller"),
         AppItem(id: UUID(), title: "Dr. Driving", subtitle: "Dr. Driving drives you crazy!", version: "1.69", ipaURL: nil, iconName: "car"),
-        AppItem(id: UUID(), title: "Combat Master", subtitle: "Fast-Paced ActionFPS", version: "0.12.3", ipaURL: nil, iconName: "shield")
+        AppItem(id: UUID(), title: "Combat Master", subtitle: "Fast-Paced Action FPS", version: "0.12.3", ipaURL: nil, iconName: "shield")
     ]
     @State private var showFilePicker = false
 
@@ -22,38 +22,27 @@ struct MainStoreView: View {
                         .cornerRadius(12)
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(app.title)
-                            .font(.headline)
-                        Text(app.subtitle)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                        Text(app.title).font(.headline)
+                        Text(app.subtitle).font(.subheadline).foregroundColor(.secondary)
                     }
                     
                     Spacer()
                     
-                    Button(action: {
-                        print("Triggering on-device signing configuration for: \(app.title)")
-                    }) {
-                        Text("GET")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(.blue)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 6)
-                            .background(Color(.systemGroupedBackground))
-                            .cornerRadius(20)
+                    Button("GET") {
+                        print("Signing app package locally: \(app.title)")
                     }
+                    .font(.system(size: 14, weight: .bold))
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 6)
+                    .background(Color(.systemGroupedBackground))
+                    .cornerRadius(20)
                 }
-                .padding(.vertical, 4)
             }
             .navigationTitle("Discover")
             .toolbar {
-                // Top-Left Placement for adding custom IPAs
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        showFilePicker = true
-                    }) {
-                        Image(systemName: "plus")
-                            .font(.title2)
+                    Button(action: { showFilePicker = true }) {
+                        Image(systemName: "plus").font(.title2)
                     }
                 }
             }
@@ -64,7 +53,6 @@ struct MainStoreView: View {
     }
 }
 
-// System Bridge to import local unsigned IPA files into your Custom Store interface
 struct DocumentPicker: UIViewControllerRepresentable {
     @Binding var apps: [AppItem]
     
@@ -75,21 +63,16 @@ struct DocumentPicker: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {}
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
     
     class Coordinator: NSObject, UIDocumentPickerDelegate {
         var parent: DocumentPicker
         init(_ parent: DocumentPicker) { self.parent = parent }
         
         func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-            guard let selectedURL = urls.first else { return }
-            let fileName = selectedURL.deletingPathExtension().lastPathComponent
-            
-            // Append the new custom application package to your dashboard layout
-            let newApp = AppItem(id: UUID(), title: fileName, subtitle: "Imported Local IPA File", version: "Local", ipaURL: selectedURL, iconName: "doc.badge.plus")
+            guard let url = urls.first else { return }
+            let name = url.deletingPathExtension().lastPathComponent
+            let newApp = AppItem(id: UUID(), title: name, subtitle: "Local Unsigned IPA", version: "1.0", ipaURL: url, iconName: "doc.badge.plus")
             parent.apps.append(newApp)
         }
     }
