@@ -1,9 +1,9 @@
-  name: Generate and Build Unsigned App Store
+name: Generate and Build Unsigned App Store
 
 on:
   push:
-    branches: [ "main" ] # Runs automatically every time you push code changes to the main branch
-  workflow_dispatch: # Allows you to manually click "Run workflow" inside GitHub web interface
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   generate_and_compile:
@@ -18,17 +18,15 @@ jobs:
       with:
         python-version: '3.10'
 
-    # Step 1: Execute your python automation script to generate the Xcode structure
     - name: Run Project Generation Script
       run: |
         if [ -f "generate_app_store_project.py" ]; then
           python generate_app_store_project.py
         else
-          echo "Error: generate_app_store_project.py file not found in the root directory!"
+          echo "Error: generate_app_store_project.py file not found!"
           exit 1
         fi
 
-    # Step 2: Compile the generated app bundle while completely bypassing Apple certificates
     - name: Compile Generated Project with Xcode
       run: |
         xcodebuild -project AppStoreProject.xcodeproj \
@@ -42,7 +40,6 @@ jobs:
                    -archivePath $RUNNER_TEMP/AppStore.xcarchive \
                    clean archive
 
-    # Step 3: Package the compiled components into the standard .ipa file structure 
     - name: Package App Bundle into Portable IPA
       run: |
         mkdir -p $RUNNER_TEMP/Payload
@@ -50,7 +47,6 @@ jobs:
         cd $RUNNER_TEMP
         zip -r CustomAppStore_Unsigned.ipa Payload
 
-    # Step 4: Save the final unsigned archive so you can download it onto your iPad
     - name: Upload Unsigned IPA Artifact
       uses: actions/upload-artifact@v4
       with:
