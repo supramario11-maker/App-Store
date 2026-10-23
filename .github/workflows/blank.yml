@@ -1,0 +1,55 @@
+name: Build iOS IPA
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    # 1. First, setup the Apple Certificate using your App Store Connect API keys
+    - name: Generate p12 and Fetch Mobileprovision
+      uses: apple-actions/setup-apple-certificate@v1
+      with:
+        appstore-issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+        appstore-key-id: ${{ secrets.APPSTORE_KEY_ID }}
+        appstore-p8-key: ${{ secrets.APPSTORE_P8_KEY }}
+        keychain-password: ${{ secrets.KEYCHAIN_PASSWORD }}
+        bundle-id: 'com.malek.appstore'  # Your app bundle ID
+        profile-type: 'AD_HOC'
+
+    # 2. Add your step to securely download the provisioning profiles into the runner
+    - name: Download Apple Provisioning Profiles
+      uses: Apple-Actions/download-provisioning-profiles@v7.0.0
+      with:
+        bundle-id: 'com.malek.appstore'
+        profile-type: 'AD_HOC'
+        issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+        api-key-id: ${{ secrets.APPSTORE_KEY_ID }}
+        api-key-content: ${{ secrets.APPSTORE_P8_KEY }}
+
+    # 3. Compile and Export the App Package
+    - name: Build Archive and Export IPA
+      run: |
+        xcodebuild -project YourProjectName.xcodeproj \
+                   -scheme YourSchemeName \
+                   -sdk iphoneos \
+                   -configuration Release \
+                   -archivePath $RUNNER_TEMP/YourProjectName.xcarchive \
+                   archive
+
+        xcodebuild -exportArchive \
+                   -archivePath $RUNNER_TEMP/YourProjectName.xcarchive \
+                   -exportOptionsPlist exportOptions.plist \
+                   -exportPath $RUNNER_TEMP/build
+
+    - name: Upload Finished IPA
+      uses: actions/upload-artifact@v4
+      with:
+        name: iOS-App-IPA
+        path: ${{ runner.temp }}/build/*.ipa
