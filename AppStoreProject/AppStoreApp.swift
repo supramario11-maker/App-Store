@@ -1,10 +1,6 @@
-import SwiftUI
-
-@main
-struct AppStoreApp: App {
-    var body: some Scene {
-        WindowGroup {
-            MainStoreView()
-        }
-    }
+if let url = app.ipaURL {
+    downloadManager.downloadIPA(
+        from: url,
+        title: app.title
+    )
 }
