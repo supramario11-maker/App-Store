@@ -1,55 +1,58 @@
-name: Build iOS IPA
+  name: Generate and Build Unsigned App Store
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main" ] # Runs automatically every time you push code changes to the main branch
+  workflow_dispatch: # Allows you to manually click "Run workflow" inside GitHub web interface
 
 jobs:
-  build:
+  generate_and_compile:
     runs-on: macos-latest
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout Repository Source
       uses: actions/checkout@v4
 
-    # 1. First, setup the Apple Certificate using your App Store Connect API keys
-    - name: Generate p12 and Fetch Mobileprovision
-      uses: apple-actions/setup-apple-certificate@v1
+    - name: Setup Python Environment
+      uses: actions/setup-python@v5
       with:
-        appstore-issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
-        appstore-key-id: ${{ secrets.APPSTORE_KEY_ID }}
-        appstore-p8-key: ${{ secrets.APPSTORE_P8_KEY }}
-        keychain-password: ${{ secrets.KEYCHAIN_PASSWORD }}
-        bundle-id: 'com.malek.appstore'  # Your app bundle ID
-        profile-type: 'AD_HOC'
+        python-version: '3.10'
 
-    # 2. Add your step to securely download the provisioning profiles into the runner
-    - name: Download Apple Provisioning Profiles
-      uses: Apple-Actions/download-provisioning-profiles@v7.0.0
-      with:
-        bundle-id: 'com.malek.appstore'
-        profile-type: 'AD_HOC'
-        issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
-        api-key-id: ${{ secrets.APPSTORE_KEY_ID }}
-        api-key-content: ${{ secrets.APPSTORE_P8_KEY }}
-
-    # 3. Compile and Export the App Package
-    - name: Build Archive and Export IPA
+    # Step 1: Execute your python automation script to generate the Xcode structure
+    - name: Run Project Generation Script
       run: |
-        xcodebuild -project YourProjectName.xcodeproj \
-                   -scheme YourSchemeName \
-                   -sdk iphoneos \
+        if [ -f "generate_app_store_project.py" ]; then
+          python generate_app_store_project.py
+        else
+          echo "Error: generate_app_store_project.py file not found in the root directory!"
+          exit 1
+        fi
+
+    # Step 2: Compile the generated app bundle while completely bypassing Apple certificates
+    - name: Compile Generated Project with Xcode
+      run: |
+        xcodebuild -project AppStoreProject.xcodeproj \
+                   -scheme AppStoreProject \
                    -configuration Release \
-                   -archivePath $RUNNER_TEMP/YourProjectName.xcarchive \
-                   archive
+                   -sdk iphoneos \
+                   CODE_SIGNING_ALLOWED=NO \
+                   CODE_SIGNING_REQUIRED=NO \
+                   CODE_SIGN_IDENTITY="" \
+                   PROVISIONING_PROFILE_SPECIFIER="" \
+                   -archivePath $RUNNER_TEMP/AppStore.xcarchive \
+                   clean archive
 
-        xcodebuild -exportArchive \
-                   -archivePath $RUNNER_TEMP/YourProjectName.xcarchive \
-                   -exportOptionsPlist exportOptions.plist \
-                   -exportPath $RUNNER_TEMP/build
+    # Step 3: Package the compiled components into the standard .ipa file structure 
+    - name: Package App Bundle into Portable IPA
+      run: |
+        mkdir -p $RUNNER_TEMP/Payload
+        cp -R $RUNNER_TEMP/AppStore.xcarchive/Products/Applications/*.app $RUNNER_TEMP/Payload/
+        cd $RUNNER_TEMP
+        zip -r CustomAppStore_Unsigned.ipa Payload
 
-    - name: Upload Finished IPA
+    # Step 4: Save the final unsigned archive so you can download it onto your iPad
+    - name: Upload Unsigned IPA Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: iOS-App-IPA
-        path: ${{ runner.temp }}/build/*.ipa
+        name: CustomAppStore-Unsigned-Build
+        path: ${{ runner.temp }}/CustomAppStore_Unsigned.ipa
