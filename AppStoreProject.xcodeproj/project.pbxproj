@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0BEB9026F076BBA8ACFD0112 /* SigningDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFEBAA6A2F02B68F4D95D473 /* SigningDashboardView.swift */; };
+		4AC0B516E930323B7134A057 /* AnisetteServersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 482D32535CF7A587070A3316 /* AnisetteServersView.swift */; };
 		8A2C21D692A6ACAD4339C4B5 /* MainStoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7859742E2F22585E93A673A9 /* MainStoreView.swift */; };
 		AF250367A3C77DFC118A1676 /* AppItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C279AC30E9C0C0F3777542CF /* AppItem.swift */; };
 		BBFE882F72BFC0B67442AD33 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF44FC59264DEAB34CC32E3 /* DownloadManager.swift */; };
@@ -15,11 +17,13 @@
 
 /* Begin PBXFileReference section */
 		2EF44FC59264DEAB34CC32E3 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
+		482D32535CF7A587070A3316 /* AnisetteServersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnisetteServersView.swift; sourceTree = "<group>"; };
 		5B5CAA252372535C9C24CC64 /* AppStoreApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreApp.swift; sourceTree = "<group>"; };
 		62134C1AA963734A04F43D92 /* AppStoreProject.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AppStoreProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7859742E2F22585E93A673A9 /* MainStoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainStoreView.swift; sourceTree = "<group>"; };
 		A976C0E3226EF0EB05B966EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C279AC30E9C0C0F3777542CF /* AppItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppItem.swift; sourceTree = "<group>"; };
+		FFEBAA6A2F02B68F4D95D473 /* SigningDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigningDashboardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -78,7 +82,9 @@
 		B266201BAEE33FBC30AEA25C /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				482D32535CF7A587070A3316 /* AnisetteServersView.swift */,
 				7859742E2F22585E93A673A9 /* MainStoreView.swift */,
+				FFEBAA6A2F02B68F4D95D473 /* SigningDashboardView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -138,10 +144,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4AC0B516E930323B7134A057 /* AnisetteServersView.swift in Sources */,
 				AF250367A3C77DFC118A1676 /* AppItem.swift in Sources */,
 				CC5AC85286DFE82D896AD203 /* AppStoreApp.swift in Sources */,
 				BBFE882F72BFC0B67442AD33 /* DownloadManager.swift in Sources */,
 				8A2C21D692A6ACAD4339C4B5 /* MainStoreView.swift in Sources */,
+				0BEB9026F076BBA8ACFD0112 /* SigningDashboardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
